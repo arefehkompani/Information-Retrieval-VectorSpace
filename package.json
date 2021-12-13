@@ -1,0 +1,14 @@
+{
+  "name": "search_engine_phase1",
+  "version": "1.0.0",
+  "description": "Information retrieval project :)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node Main.js"
+  },
+  "author": "Arefeh Kompani",
+  "license": "MIT",
+  "dependencies": {
+    "xlsx": "^0.17.4"
+  }
+}
