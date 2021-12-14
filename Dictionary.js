@@ -58,7 +58,7 @@ module.exports = class Read {
             console.clear()
             console.log("create token of content: " + id);
         })
-        
+        let numberofdocs = contents.length
         console.log("Token total length: "+numtoken);
         console.log("Normal total length: "+doc_tokens_content.length);
         doc_tokens_content = [...new Set(doc_tokens_content)]
@@ -83,6 +83,7 @@ module.exports = class Read {
                     if (pos.length != 0) {
                         positional_index[token][tokenid+1] = pos
                         positional_index[token][tokenid+1]['sum'] = pos.length
+                        positional_index[token][tokenid+1]["weight"] = 0
                     }
                     sumtotal += pos.length
                     positional_index[token]['sum'] = sumtotal
@@ -90,8 +91,27 @@ module.exports = class Read {
                     //console.log("in process: "+ alltokenlength--)
                 }
             })
+
+            for (var key in positional_index) {
+                let l = 0
+                for (var key2 in positional_index[key]) {
+                    l++
+                }
+                for (var key2 in positional_index[key]) {
+                    if((typeof positional_index[key][key2])=='object'){
+                        //console.log("length: " + (l-1));
+                        let idft = Math.log10(numberofdocs/(l-1))
+                        console.log(Math.log10(1));
+                        //console.log(idft, (l-1));
+                        let tf = 1 + Math.log10(positional_index[key][key2]['sum'])
+                        //delete
+                        positional_index[key][key2]['weight'] = parseFloat((tf*idft).toFixed(2))
+                    }
+                }
+            }
+
         })
-        console.log(positional_index);
+        //console.log(positional_index);
          
         normalizer.get_heaplaw()
         return positional_index
