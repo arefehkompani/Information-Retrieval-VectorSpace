@@ -112,11 +112,10 @@ module.exports = class Query {
 
         query_token = this.Tokenizer.set_tokenizer(query)
         query_normal = this.Normalizer.set_normalizer(query_token)
-
-        query_normal.map(tokenq=>{
-
-            var count = query.split(tokenq).length - 1
-            console.log(tokenq,count);
+        
+        query_token.map(tokenq => {
+            
+            var count = query_token.filter((v) => (v === tokenq)).length
             let wt = 1 + Math.log10(count)
             console.log('wt: ',wt);
 
