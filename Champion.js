@@ -32,6 +32,7 @@ module.exports = class Champion {
 
         })
 
-        console.log(champion_list);
+        //console.log(champion_list);
+        return champion_list
     }
 }

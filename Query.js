@@ -1,12 +1,14 @@
 const Dictionary = require('./Dictionary')
 const Tokenizer = require('./Tokenizer')
 const Normalizer = require('./Normalizer')
+const Champion = require('./Champion')
 
 module.exports = class Query {
     constructor(){
         this.Dictionary = new Dictionary
         this.Tokenizer = new Tokenizer
         this.Normalizer = new Normalizer
+        this.Champion = new Champion
 
         //this.dictionary = this.Dictionary.set_dictionary()
     }
@@ -99,5 +101,41 @@ module.exports = class Query {
 
     kind_query(query){
         query.split(' ').length==1 ? this.one_word_query(query) : this.multi_word_query(query)
+    }
+
+    split_query(query){
+
+        let champion_list = this.Champion.create_championlist()
+        let query_normal = []
+        let query_token = []
+        let weights = {}
+
+        query_token = this.Tokenizer.set_tokenizer(query)
+        query_normal = this.Normalizer.set_normalizer(query_token)
+
+        query_normal.map(tokenq=>{
+
+            var count = query.split(tokenq).length - 1
+            console.log(tokenq,count);
+            let wt = 1 + Math.log10(count)
+            console.log('wt: ',wt);
+
+            Object.keys(champion_list).map((tokend,key) => {
+
+                if (tokend==tokenq) {
+                    console.log();
+                    Object.keys(champion_list[tokend]).map((doc,index)=>{
+
+                        if(!weights[doc]){
+                            weights[doc] = champion_list[tokend][doc]*wt
+                        }else{
+                            weights[doc] = parseFloat(((champion_list[tokend][doc]*wt)+weights[doc]).toFixed(2))
+                        }
+                    
+                    })
+                }
+            })
+        })
+        console.log(weights);
     }
 }

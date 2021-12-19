@@ -48,10 +48,10 @@ module.exports = class Read {
         let prechampion = {}
         let doc_tokens_content = []
         let numtoken = 0
-        // let contents = ["سلام دانشگاه امیرکبیر خوبی سلام چطوری دانشگاه علموص صنعتی عارفه خوبه 1400آبان ما رفتیم"
-        // ,"آبان 99 گفته شد دانشگاه صنعتی صنعتی امیرکبیر که کرونا داشتم"
-        // ," صنعتی"]
-        this.contents.map((content,id) => {
+        let contents = ["سلام دانشگاه امیرکبیر خوبی سلام چطوری دانشگاه علموص صنعتی عارفه خوبه 1400آبان ما رفتیم"
+        ,"آبان 99 گفته شد دانشگاه صنعتی صنعتی امیرکبیر که کرونا داشتم"
+        ," صنعتی"]
+        contents.map((content,id) => {
             //Get all tokens in the excel file
             let doc_tok = tokenizer.set_tokenizer(content)
             let normal = normalizer.set_normalizer(doc_tok)
@@ -61,7 +61,7 @@ module.exports = class Read {
             console.clear()
             console.log("create token of content: " + id);
         })
-        let numberofdocs = this.contents.length
+        let numberofdocs = contents.length
         console.log("Token total length: "+numtoken);
         console.log("Normal total length: "+doc_tokens_content.length);
         doc_tokens_content = [...new Set(doc_tokens_content)]
@@ -73,7 +73,7 @@ module.exports = class Read {
             prechampion[token] = {}
             
             let sumtotal = 0
-            this.contents.map((content,tokenid) => {
+            contents.map((content,tokenid) => {
                 if (tokenid<5) {
                     let match
                     var re = RegExp(`${token}`, 'g')
