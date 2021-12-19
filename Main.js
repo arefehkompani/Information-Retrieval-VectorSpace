@@ -7,6 +7,7 @@ const Dictionary = require('./Dictionary')
 const Tokenizer = require('./Tokenizer')
 const Normalizer = require('./Normalizer')
 const Query = require('./Query')
+const Champion = require('./Champion')
 
 class Main {
     constructor(){
@@ -17,6 +18,8 @@ class Main {
         this.Tokenizer = new Tokenizer
         this.Normalizer = new Normalizer
         this.Query = new Query
+        this.Champion = new Champion
+        this.Champion.create_championlist()
     }
     
     start(){

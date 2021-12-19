@@ -25,7 +25,7 @@ module.exports = class Read {
         }
         this.docs_num = data.length
         data.map((rows,i) => {
-            if (i<500) {
+            if (i<5) {
                 this.contents[i] = rows['content']
                 this.docs_url[i] = rows['url']
                 this.docs_title[i] = rows['title']
@@ -45,10 +45,13 @@ module.exports = class Read {
         let tokenizer = new Tokenizer
         let normalizer = new Normalizer
         let positional_index = {}
+        let prechampion = {}
         let doc_tokens_content = []
         let numtoken = 0
-        let contents = ["سلام دانشگاه امیرکبیر خوبی سلام چطوری دانشگاه علموص صنعتی عارفه خوبه 1400آبان ما رفتیم","آبان 99 گفته شد دانشگاه صنعتی صنعتی امیرکبیر که کرونا داشتم"," صنعتی"]
-        contents.map((content,id) => {
+        let contents = ["سلام دانشگاه امیرکبیر خوبی سلام چطوری دانشگاه علموص صنعتی عارفه خوبه 1400آبان ما رفتیم"
+        ,"آبان 99 گفته شد دانشگاه صنعتی صنعتی امیرکبیر که کرونا داشتم"
+        ," صنعتی"]
+       contents.map((content,id) => {
             //Get all tokens in the excel file
             let doc_tok = tokenizer.set_tokenizer(content)
             let normal = normalizer.set_normalizer(doc_tok)
@@ -58,19 +61,20 @@ module.exports = class Read {
             console.clear()
             console.log("create token of content: " + id);
         })
-        let numberofdocs = contents.length
+        let numberofdocs = this.contents.length
         console.log("Token total length: "+numtoken);
         console.log("Normal total length: "+doc_tokens_content.length);
         doc_tokens_content = [...new Set(doc_tokens_content)]
-        let alltokenlength = doc_tokens_content.length*500
+        let alltokenlength = doc_tokens_content.length*5
         console.log(alltokenlength);
         doc_tokens_content.map((token,id) => {
             //Check the tokens with the content to find the position
             positional_index[token] = {}
+            prechampion[token] = {}
             
             let sumtotal = 0
             contents.map((content,tokenid) => {
-                if (tokenid<500) {
+                if (tokenid<5) {
                     let match
                     var re = RegExp(`${token}`, 'g')
                     let content_token = tokenizer.set_tokenizer(content)
@@ -82,13 +86,14 @@ module.exports = class Read {
                     }
                     if (pos.length != 0) {
                         positional_index[token][tokenid+1] = pos
+                        prechampion[token][tokenid+1] = [{"sum": pos.length}]
                         positional_index[token][tokenid+1]['sum'] = pos.length
                         positional_index[token][tokenid+1]["weight"] = 0
                     }
                     sumtotal += pos.length
                     positional_index[token]['sum'] = sumtotal
-                    //console.clear()
-                    //console.log("in process: "+ alltokenlength--)
+                    console.clear()
+                    console.log("in process: "+ alltokenlength--)
                 }
             })
 
@@ -101,17 +106,20 @@ module.exports = class Read {
                     if((typeof positional_index[key][key2])=='object'){
                         //console.log("length: " + (l-1));
                         let idft = Math.log10(numberofdocs/(l-1))
-                        console.log(Math.log10(1));
                         //console.log(idft, (l-1));
                         let tf = 1 + Math.log10(positional_index[key][key2]['sum'])
                         //delete
-                        positional_index[key][key2]['weight'] = parseFloat((tf*idft).toFixed(2))
+                        //positional_index[key][key2]['weight'] = parseFloat((tf*idft).toFixed(2))
+                        prechampion[key][key2] = [{"weight": parseFloat((tf*idft).toFixed(2))}]
+
                     }
                 }
             }
 
         })
-        //console.log(positional_index);
+        Object.values(prechampion).map((i)=>{
+            console.log(i);
+        })
          
         normalizer.get_heaplaw()
         return positional_index
