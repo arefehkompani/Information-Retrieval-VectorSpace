@@ -48,10 +48,10 @@ module.exports = class Read {
         let prechampion = {}
         let doc_tokens_content = []
         let numtoken = 0
-        let contents = ["سلام دانشگاه امیرکبیر خوبی سلام چطوری دانشگاه علموص صنعتی عارفه خوبه 1400آبان ما رفتیم"
-        ,"آبان 99 گفته شد دانشگاه صنعتی صنعتی امیرکبیر که کرونا داشتم"
-        ," صنعتی"]
-       contents.map((content,id) => {
+        // let contents = ["سلام دانشگاه امیرکبیر خوبی سلام چطوری دانشگاه علموص صنعتی عارفه خوبه 1400آبان ما رفتیم"
+        // ,"آبان 99 گفته شد دانشگاه صنعتی صنعتی امیرکبیر که کرونا داشتم"
+        // ," صنعتی"]
+        this.contents.map((content,id) => {
             //Get all tokens in the excel file
             let doc_tok = tokenizer.set_tokenizer(content)
             let normal = normalizer.set_normalizer(doc_tok)
@@ -73,7 +73,7 @@ module.exports = class Read {
             prechampion[token] = {}
             
             let sumtotal = 0
-            contents.map((content,tokenid) => {
+            this.contents.map((content,tokenid) => {
                 if (tokenid<5) {
                     let match
                     var re = RegExp(`${token}`, 'g')
@@ -86,7 +86,7 @@ module.exports = class Read {
                     }
                     if (pos.length != 0) {
                         positional_index[token][tokenid+1] = pos
-                        prechampion[token][tokenid+1] = [{"sum": pos.length}]
+                        //prechampion[token][tokenid+1] = [{"sum": pos.length}]
                         positional_index[token][tokenid+1]['sum'] = pos.length
                         positional_index[token][tokenid+1]["weight"] = 0
                     }
@@ -110,20 +110,23 @@ module.exports = class Read {
                         let tf = 1 + Math.log10(positional_index[key][key2]['sum'])
                         //delete
                         //positional_index[key][key2]['weight'] = parseFloat((tf*idft).toFixed(2))
-                        prechampion[key][key2] = [{"weight": parseFloat((tf*idft).toFixed(2))}]
+                        if(parseFloat((tf*idft).toFixed(2))>0)
+                            prechampion[key][key2+"th"] = parseFloat((tf*idft).toFixed(2))
 
                     }
                 }
             }
 
         })
-        Object.values(prechampion).map((i)=>{
-            console.log(i);
-        })
+        // Object.values(prechampion).map((i)=>{
+        //     console.log(i);
+        // })
+        // console.log(prechampion);
          
         normalizer.get_heaplaw()
-        return positional_index
+        return prechampion
     }
+
     sorted(unordered){
         const ordered = Object.keys(unordered).sort().reduce(
             (obj, key) => { 
@@ -133,6 +136,7 @@ module.exports = class Read {
         //console.log(ordered);
         return ordered
     }
+
     set_dictionary() {
         let dict = this.create_dictionary()
         this.create_file(dict)

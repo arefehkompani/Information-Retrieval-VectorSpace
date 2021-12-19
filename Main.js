@@ -33,7 +33,8 @@ class Main {
             if (query=='exit') {
                 process.exit(0)
             }
-            this.Query.kind_query(query)
+            // this.Query.kind_query(query)
+            this.Query.split_query(query)
             rl.close()
         });
         

@@ -8,10 +8,30 @@ module.exports = class Champion {
         this.Tokenizer = new Tokenizer
         this.Normalizer = new Normalizer
 
-        this.dictionary = this.Dictionary.set_dictionary()
+        this.prechampion = this.Dictionary.set_dictionary()
     }
     
     create_championlist(){
-        //console.log(this.dictionary);
+
+        let champion_list={}
+
+        Object.values(this.prechampion).map((i,j)=>{
+            
+            const sortedArr = Object.entries(i).sort(([, v1], [, v2]) => v2 - v1)
+            const sorted = Object.fromEntries(sortedArr)
+            let keys = Object.keys(sorted)
+
+            if(keys.length>2){
+                for(let x=keys.length; x>2;x--){
+                    delete sorted[keys[x]]
+                }
+            }
+
+            champion_list[Object.keys(this.prechampion)[j]] = {}
+            champion_list[Object.keys(this.prechampion)[j]] = sorted
+
+        })
+
+        console.log(champion_list);
     }
 }

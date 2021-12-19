@@ -8,7 +8,7 @@ module.exports = class Query {
         this.Tokenizer = new Tokenizer
         this.Normalizer = new Normalizer
 
-        this.dictionary = this.Dictionary.set_dictionary()
+        //this.dictionary = this.Dictionary.set_dictionary()
     }
     
     one_word_query(query) {
