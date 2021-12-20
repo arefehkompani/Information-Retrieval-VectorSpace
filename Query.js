@@ -4,12 +4,14 @@ const Normalizer = require('./Normalizer')
 const Champion = require('./Champion')
 
 module.exports = class Query {
+    
     constructor(){
         this.Dictionary = new Dictionary
         this.Tokenizer = new Tokenizer
         this.Normalizer = new Normalizer
         this.Champion = new Champion
 
+        
         //this.dictionary = this.Dictionary.set_dictionary()
     }
     
@@ -108,7 +110,8 @@ module.exports = class Query {
         let champion_list = this.Champion.create_championlist()
         let query_normal = []
         let query_token = []
-        let weights = {}
+        let score = {}
+        let sorted_docs = {}
 
         query_token = this.Tokenizer.set_tokenizer(query)
         query_normal = this.Normalizer.set_normalizer(query_token)
@@ -117,7 +120,6 @@ module.exports = class Query {
             
             var count = query_token.filter((v) => (v === tokenq)).length
             let wt = 1 + Math.log10(count)
-            console.log('wt: ',wt);
 
             Object.keys(champion_list).map((tokend,key) => {
 
@@ -125,16 +127,29 @@ module.exports = class Query {
                     console.log();
                     Object.keys(champion_list[tokend]).map((doc,index)=>{
 
-                        if(!weights[doc]){
-                            weights[doc] = champion_list[tokend][doc]*wt
+                        if(!score[doc]){
+                            score[doc] = champion_list[tokend][doc]*wt
                         }else{
-                            weights[doc] = parseFloat(((champion_list[tokend][doc]*wt)+weights[doc]).toFixed(2))
+                            score[doc] = parseFloat(((champion_list[tokend][doc]*wt)+score[doc]).toFixed(2))
                         }
                     
                     })
                 }
             })
         })
-        console.log(weights);
+
+        Object.keys(score).map(doc => {
+            let docid = parseFloat(doc.match(/\d+/g));
+            score[doc] = parseFloat((score[doc]/this.Dictionary.contents[docid-1].length).toFixed(5))
+            const sortedArr = Object.entries(score).sort(([, v1], [, v2]) => v2 - v1)
+            sorted_docs = Object.fromEntries(sortedArr)
+        })
+        
+        Object.keys(sorted_docs).map((doc,index) => {
+            let docid = parseFloat(doc.match(/\d+/g));
+            if(index<1){
+                console.log(this.Dictionary.docs_title[docid-1]);
+            }
+        })
     }
 }
