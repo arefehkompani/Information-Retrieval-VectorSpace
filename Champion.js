@@ -21,7 +21,7 @@ module.exports = class Champion {
             const sorted = Object.fromEntries(sortedArr)
             let keys = Object.keys(sorted)
 
-            if(keys.length>2){
+            if(keys.length>10){
                 for(let x=keys.length; x>2;x--){
                     delete sorted[keys[x]]
                 }
