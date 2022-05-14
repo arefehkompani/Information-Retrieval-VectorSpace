@@ -25,7 +25,7 @@ module.exports = class Read {
         }
         this.docs_num = data.length
         data.map((rows,i) => {
-            if (i<200) {
+            if (i<500) {
                 this.contents[i] = rows['content']
                 this.docs_url[i] = rows['url']
                 this.docs_title[i] = rows['title']
@@ -49,7 +49,7 @@ module.exports = class Read {
         let doc_tokens_content = []
         let numtoken = 0
         // let contents = ["سلام دانشگاه امیرکبیر خوبی سلام چطوری دانشگاه علموص صنعتی عارفه خوبه 1400آبان ما رفتیم"
-        // ,"آبان 200200 گفته شد دانشگاه صنعتی صنعتی امیرکبیر که کرونا داشتم"
+        // ,"آبان 500500 گفته شد دانشگاه صنعتی صنعتی امیرکبیر که کرونا داشتم"
         // ," صنعتی"]
         this.contents.map((content,id) => {
             //Get all tokens in the excel file
@@ -65,7 +65,7 @@ module.exports = class Read {
         console.log("Token total length: "+numtoken);
         console.log("Normal total length: "+doc_tokens_content.length);
         doc_tokens_content = [...new Set(doc_tokens_content)]
-        let alltokenlength = doc_tokens_content.length*200
+        let alltokenlength = doc_tokens_content.length*500
         console.log(alltokenlength);
         doc_tokens_content.map((token,id) => {
             //Check the tokens with the content to find the position
@@ -74,7 +74,7 @@ module.exports = class Read {
             
             let sumtotal = 0
             this.contents.map((content,tokenid) => {
-                if (tokenid<200) {
+                if (tokenid<500) {
                     let match
                     var re = RegExp(`${token}`, 'g')
                     let content_token = tokenizer.set_tokenizer(content)

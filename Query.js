@@ -54,7 +54,7 @@ module.exports = class Query {
         
         Object.keys(sorted_docs).map((doc,index) => {
             let docid = parseFloat(doc.match(/\d+/g));
-            if(index<10){
+            if(index<30){
                 console.log(this.Dictionary.docs_title[docid-1]);
             }
         })
